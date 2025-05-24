@@ -8,6 +8,12 @@
     "scheme": "checklify",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "fonts": [
+      {
+        "assetPath": "./assets/fonts/Lato-Regular.ttf",
+        "fontFamily": "Lato"
+      }
+    ],
     "ios": {
       "supportsTablet": true
     },
