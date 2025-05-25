@@ -1,9 +1,10 @@
 import { useThemeColor } from "@/hooks/useThemeColor"
+import { ReactNode } from "react"
 import { StyleProp, Text, TextStyle } from "react-native"
 import { styles } from "./styles"
 
 interface CustomTextProps {
-  children: string
+  children: ReactNode
   style?: StyleProp<TextStyle>
   size?: "small" | "medium" | "large"
 }

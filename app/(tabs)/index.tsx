@@ -1,10 +1,12 @@
-import CustomText from "@/components/atoms/CustomText"
+import Select from "@/components/atoms/Select"
 import Container from "@/components/organisms/Container"
+import TaskList from "@/components/organisms/TaskList"
 
 export default function HomeScreen() {
   return (
     <Container>
-      <CustomText>This is home</CustomText>
+      <Select />
+      <TaskList />
     </Container>
   )
 }

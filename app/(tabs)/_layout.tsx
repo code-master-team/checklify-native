@@ -16,7 +16,7 @@ export default function TabsLayout() {
         headerTitle: ({ children }) => <Title level={2}>{children}</Title>,
         headerTitleAlign: "center",
         headerStyle: {
-          backgroundColor: backgroundColor,
+          backgroundColor,
           flex: 1,
           height: 70,
           shadowColor: "transparent",
