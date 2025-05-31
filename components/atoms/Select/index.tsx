@@ -1,183 +1,129 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { Colors } from "@/constants/Colors"
+import { useThemeColor } from "@/hooks/useThemeColor"
+import { IOption } from "@/types"
 import React, { useRef, useState } from "react"
-import {
-  Animated,
-  ScrollView,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native"
+import { StyleSheet, View, Text, Dimensions } from "react-native"
+import { Dropdown } from "react-native-element-dropdown"
 
-const data = [
-  { title: "happy", icon: "emoticon-happy-outline" },
-  { title: "cool", icon: "emoticon-cool-outline" },
-  { title: "lol", icon: "emoticon-lol-outline" },
-  { title: "sad", icon: "emoticon-sad-outline" },
-  { title: "cry", icon: "emoticon-cry-outline" },
+const data: IOption[] = [
+  { label: "Item 1", value: "1" },
+  { label: "Item 2", value: "2" },
+  { label: "Item 3", value: "3" },
+  { label: "Item 431232323", value: "4" },
+  { label: "Item 5", value: "5" },
+  { label: "Item 6", value: "6" },
+  { label: "Item 7", value: "7" },
+  { label: "Item 8", value: "8" },
 ]
 
-type SelectProps = {
-  onSelect?: (item: any) => void
+interface IDropdownProps {
   placeholder?: string
-  buttonStyle?: StyleProp<ViewStyle>
-  buttonTextStyle?: StyleProp<TextStyle>
-  dropdownStyle?: StyleProp<ViewStyle>
-  itemStyle?: StyleProp<ViewStyle>
-  itemTextStyle?: StyleProp<TextStyle>
-  selectedItemStyle?: StyleProp<ViewStyle>
+  onChange?: (value: string) => void
 }
 
-export default function Select(props: SelectProps) {
-  const {
-    // data,
-    onSelect,
-    placeholder = "Select your mood",
-    buttonStyle,
-    buttonTextStyle,
-    dropdownStyle,
-    itemStyle,
-    itemTextStyle,
-    selectedItemStyle,
-  } = props
+export default function Select(props: IDropdownProps) {
+  const { placeholder = "Select item", onChange } = props
+  const backgroundColor = useThemeColor("backgroundSecondary")
+  const color = useThemeColor("text")
 
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [selectedItem, setSelectedItem] = useState<any | null>(null)
-  const animation = useRef(new Animated.Value(0)).current
+  const textRef = useRef<Text>(null)
 
-  const toggleDropdown = () => {
-    Animated.timing(animation, {
-      toValue: isOpen ? 0 : 1,
-      duration: 200,
-      useNativeDriver: false,
-    }).start()
-    setIsOpen(!isOpen)
+  const { width: screenWidth } = Dimensions.get("window")
+
+  const [value, setValue] = useState(null)
+  const [dropdownWidth, setDropdownWidth] = useState<number>(0)
+
+  const selectedItem = data.find((item) => item.value === value)
+  const displayText = selectedItem ? selectedItem.label : placeholder
+
+  const handleLayout = () => {
+    if (textRef.current)
+      textRef.current.measure((x, y, width) => {
+        setDropdownWidth(width)
+      })
   }
-
-  const handleSelectItem = (item: any) => {
-    setSelectedItem(item)
-    toggleDropdown()
-    onSelect?.(item)
-  }
-
-  const heightInterpolate = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 200],
-  })
-
-  const rotateInterpolate = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "180deg"],
-  })
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.dropdownButton, buttonStyle]}
-        onPress={toggleDropdown}
-        activeOpacity={0.8}
-      >
-        <Text style={[styles.buttonText, buttonTextStyle]}>
-          {selectedItem ? selectedItem.title : placeholder}
-        </Text>
-        <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-          <MaterialCommunityIcons
-            name="chevron-down"
-            size={24}
-            color="#151E26"
-          />
-        </Animated.View>
-      </TouchableOpacity>
+    <View style={{ alignSelf: "flex-start" }}>
+      <Text ref={textRef} style={styles.measureText} onLayout={handleLayout}>
+        {displayText}
+      </Text>
 
-      <Animated.View
-        style={[
-          styles.dropdownList,
-          dropdownStyle,
-          { height: heightInterpolate },
+      <Dropdown
+        style={[styles.dropdown, { backgroundColor, width: dropdownWidth }]}
+        placeholderStyle={(styles.placeholderStyle, { color })}
+        selectedTextStyle={[styles.selectedTextStyle, { color }]}
+        containerStyle={[
+          styles.container,
+          {
+            backgroundColor,
+            borderColor: backgroundColor,
+            width: screenWidth - 30,
+          },
         ]}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {data.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.item,
-                itemStyle,
-                selectedItem?.title === item.title && [
-                  styles.selectedItem,
-                  selectedItemStyle,
-                ],
-              ]}
-              onPress={() => handleSelectItem(item)}
-            >
-              <MaterialCommunityIcons
-                // name={item.icon}
-                size={24}
-                color="#151E26"
-                style={styles.icon}
-              />
-              <Text style={[styles.itemText, itemTextStyle]}>{item.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </Animated.View>
+        data={data}
+        maxHeight={250}
+        labelField="label"
+        valueField="value"
+        placeholder={placeholder}
+        value={value}
+        showsVerticalScrollIndicator={false}
+        onChange={(item) => {
+          setValue(item.value)
+          onChange && onChange(item.value)
+        }}
+        renderItem={(item: IOption, selected) => (
+          <Text
+            style={[
+              styles.item,
+              {
+                color,
+                backgroundColor: selected ? Colors.gray : backgroundColor,
+              },
+            ]}
+          >
+            {item.label}
+          </Text>
+        )}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  dropdown: {
+    height: 32,
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 12,
+  },
   container: {
-    width: 200,
-    position: "relative",
-    zIndex: 1,
-  },
-  dropdownButton: {
-    backgroundColor: "#E9ECEF",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#151E26",
-  },
-  dropdownList: {
-    position: "absolute",
-    top: "100%",
-    width: "100%",
-    backgroundColor: "#E9ECEF",
-    borderRadius: 8,
-    marginTop: 4,
-    overflow: "hidden",
-  },
-  scrollContent: {
-    paddingVertical: 8,
+    marginTop: 10,
+    borderRadius: 4,
+    borderWidth: 0,
+    borderTopWidth: 3,
+    borderBottomWidth: 3,
   },
   item: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  selectedItem: {
-    backgroundColor: "#D2D9DF",
-  },
-  itemText: {
+    height: 48,
+    padding: 10,
     fontSize: 16,
-    marginLeft: 8,
-    color: "#151E26",
   },
-  icon: {
-    width: 24,
-    textAlign: "center",
+  placeholderStyle: {
+    fontSize: 14,
+  },
+  selectedTextStyle: {
+    fontSize: 14,
+  },
+  measureText: {
+    fontSize: 14,
+    position: "absolute",
+    opacity: 0,
+    visibility: "hidden",
+    flexShrink: 1,
+    color: "red",
+    paddingLeft: 12,
+    paddingRight: 40,
+    backgroundColor: "blue",
   },
 })

@@ -18,15 +18,15 @@ export default function TabsLayout() {
         headerStyle: {
           backgroundColor,
           flex: 1,
-          height: 70,
+          height: 80,
           shadowColor: "transparent",
           borderBottomWidth: 0,
         },
         headerLeftContainerStyle: {
-          paddingLeft: 24,
+          paddingLeft: 15,
         },
         headerRightContainerStyle: {
-          paddingRight: 24,
+          paddingRight: 15,
         },
       }}
       tabBar={(props) => <TabBar {...props} />}

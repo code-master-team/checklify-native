@@ -5,7 +5,7 @@ export default function CalendarScreen() {
   return (
     <Container>
       <CustomText size="large" style={{ fontSize: 50 }}>
-        Ты пупсик
+        text
       </CustomText>
     </Container>
   )
