@@ -24,9 +24,10 @@ export default function TabItemBtn(props: ITabItemBtn) {
         ...(routeName === "calendar" && { marginRight: 80 }),
       }}
     >
-      {icons[routeName]({
-        isFocused,
-      })}
+      {icons[routeName] &&
+        icons[routeName]({
+          isFocused,
+        })}
       <Text style={styles.tabBarItemText}>{label}</Text>
     </TouchableOpacity>
   )

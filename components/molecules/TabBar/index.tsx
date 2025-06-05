@@ -1,7 +1,9 @@
 import { styles } from "@/components/molecules/TabBar/styles"
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
-import { View } from "react-native"
+import { Text, Touchable, TouchableOpacity, View } from "react-native"
 import TabItemBtn from "@/components/atoms/TabItemBtn"
+import { PlusIcon } from "@/assets/icons"
+import { router } from "expo-router"
 
 interface TabBarProps {
   state: BottomTabBarProps["state"]
@@ -16,6 +18,23 @@ export default function TabBar({
 }: TabBarProps) {
   return (
     <View style={styles.tabBar}>
+      <TouchableOpacity
+        onPress={() => router.push("/create_task")}
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: 0,
+          transform: "translate(-50%, -50%)",
+          height: 64,
+          width: 64,
+          borderRadius: "50%",
+          backgroundColor: "#8687E7",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <PlusIcon />
+      </TouchableOpacity>
       {state.routes.map((route, index) => {
         if (["_sitemap", "+not-found"].includes(route.name)) return null
 

@@ -4,7 +4,7 @@ import { Title } from "@/components/atoms/Title"
 import TabBar from "@/components/molecules/TabBar"
 import { useThemeColor } from "@/hooks/useThemeColor"
 import { Tabs, useRouter } from "expo-router"
-import { Pressable } from "react-native"
+import { Pressable, StyleSheet } from "react-native"
 
 export default function TabsLayout() {
   const backgroundColor = useThemeColor("background")
@@ -15,13 +15,7 @@ export default function TabsLayout() {
       screenOptions={{
         headerTitle: ({ children }) => <Title level={2}>{children}</Title>,
         headerTitleAlign: "center",
-        headerStyle: {
-          backgroundColor,
-          flex: 1,
-          height: 80,
-          shadowColor: "transparent",
-          borderBottomWidth: 0,
-        },
+        headerStyle: { ...style.headerStyle, backgroundColor },
         headerLeftContainerStyle: {
           paddingLeft: 15,
         },
@@ -56,6 +50,7 @@ export default function TabsLayout() {
           title: "Calendar",
         }}
       />
+
       <Tabs.Screen
         name={NavigationEnum.FOCUS}
         options={{
@@ -71,3 +66,12 @@ export default function TabsLayout() {
     </Tabs>
   )
 }
+
+const style = StyleSheet.create({
+  headerStyle: {
+    flex: 1,
+    height: 80,
+    shadowColor: "transparent",
+    borderBottomWidth: 0,
+  },
+})

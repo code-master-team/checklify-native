@@ -1,19 +1,15 @@
 import { Colors } from "@/constants/Colors"
 import { useThemeColor } from "@/hooks/useThemeColor"
 import { IOption } from "@/types"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { StyleSheet, View, Text, Dimensions } from "react-native"
 import { Dropdown } from "react-native-element-dropdown"
 
 const data: IOption[] = [
-  { label: "Item 1", value: "1" },
-  { label: "Item 2", value: "2" },
-  { label: "Item 3", value: "3" },
-  { label: "Item 431232323", value: "4" },
-  { label: "Item 5", value: "5" },
-  { label: "Item 6", value: "6" },
-  { label: "Item 7", value: "7" },
-  { label: "Item 8", value: "8" },
+  { label: "Yesterday", value: "yesterday" },
+  { label: "Today", value: "today" },
+  { label: "Tomorrow", value: "tomorrow" },
+  { label: "This week", value: "this week" },
 ]
 
 interface IDropdownProps {
@@ -21,7 +17,7 @@ interface IDropdownProps {
   onChange?: (value: string) => void
 }
 
-export default function Select(props: IDropdownProps) {
+export default function CustomDropdown(props: IDropdownProps) {
   const { placeholder = "Select item", onChange } = props
   const backgroundColor = useThemeColor("backgroundSecondary")
   const color = useThemeColor("text")
@@ -31,21 +27,21 @@ export default function Select(props: IDropdownProps) {
   const { width: screenWidth } = Dimensions.get("window")
 
   const [value, setValue] = useState(null)
-  const [dropdownWidth, setDropdownWidth] = useState<number>(0)
+  const [dropdownWidth, setDropdownWidth] = useState<number>(400)
 
   const selectedItem = data.find((item) => item.value === value)
   const displayText = selectedItem ? selectedItem.label : placeholder
 
-  const handleLayout = () => {
+  useEffect(() => {
     if (textRef.current)
       textRef.current.measure((x, y, width) => {
         setDropdownWidth(width)
       })
-  }
+  }, [value])
 
   return (
     <View style={{ alignSelf: "flex-start" }}>
-      <Text ref={textRef} style={styles.measureText} onLayout={handleLayout}>
+      <Text ref={textRef} style={styles.measureText}>
         {displayText}
       </Text>
 
